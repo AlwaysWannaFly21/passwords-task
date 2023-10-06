@@ -3,16 +3,15 @@ using password_task.Models;
 using System.Text.RegularExpressions;
 
 namespace password_task.Services;
-
 public class FileService : IFileService
 {
-    private readonly Regex _regex = new(@"(\w) (\d+)-(\d+): (.+)");
+    private readonly Regex _regex = new(@"(\w) (\d+)-(\d+): (.+)", RegexOptions.Compiled);
 
     public int GetValidPasswordsCount(IFormFile file)
     {
-        using var reader = new StreamReader(file.OpenReadStream());
+        var validPasswordsCount = 0;
 
-        var rules = new List<PasswordRule>();
+        using var reader = new StreamReader(file.OpenReadStream());
 
         while (reader.ReadLine() is { } line)
         {
@@ -26,27 +25,8 @@ public class FileService : IFileService
             var maxCount = int.Parse(match.Groups[3].Value);
             var password = match.Groups[4].Value;
 
-            var rule = new PasswordRule
-            {
-                Symbol = symbol,
-                MinCount = minCount,
-                MaxCount = maxCount,
-                Password = password
-            };
-
-            rules.Add(rule);
-        }
-
-        return CountValidPasswords(rules);
-    }
-
-    private static int CountValidPasswords(IEnumerable<PasswordRule> rules)
-    {
-        var validPasswordsCount = 0;
-        foreach (var rule in rules)
-        {
-            var symbolCount = rule.Password.Count(c => c == rule.Symbol);
-            if (symbolCount >= rule.MinCount && symbolCount <= rule.MaxCount)
+            var symbolCount = password.Count(c => c == symbol);
+            if (symbolCount >= minCount && symbolCount <= maxCount)
             {
                 validPasswordsCount++;
             }

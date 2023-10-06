@@ -8,7 +8,6 @@ namespace password_task.Controllers
     public class FileController : ControllerBase
     {
         private readonly IFileService _fileService;
-
         public FileController(IFileService fileService)
         {
             _fileService = fileService;
