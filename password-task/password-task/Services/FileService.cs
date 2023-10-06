@@ -1,5 +1,4 @@
 ﻿using password_task.Interfaces;
-using password_task.Models;
 using System.Text.RegularExpressions;
 
 namespace password_task.Services;
@@ -25,7 +24,7 @@ public class FileService : IFileService
             var maxCount = int.Parse(match.Groups[3].Value);
             var password = match.Groups[4].Value;
 
-            var symbolCount = password.Count(c => c == symbol);
+            var symbolCount = password.Count(c => c.Equals(symbol));
             if (symbolCount >= minCount && symbolCount <= maxCount)
             {
                 validPasswordsCount++;
